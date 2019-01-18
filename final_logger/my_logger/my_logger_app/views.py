@@ -66,18 +66,83 @@ def register_item(request):
 @api_view(["POST"])
 def register_variant(request):
     try:
-        p=Items.objects.all()
         selected_item = Items.objects.get(id=request.data['item_name'])
-        print(selected_item)
+        serializer=VariantSerializier(
+            data={
+                'item_name':selected_item,
+                'variant_name':request.data['variant_name'],
+                'selling_price':request.data['selling_price'],
+                'cost_price':request.data['cost_price'],
+                'quantity':request.data['quantity']
+            }
+
+        )
+        if serializer.is_valid():
+            print('daivam')
+            p =Variant.objects.create(
+            item=selected_item,
+            variant_name=request.data['variant_name'],
+            selling_price=request.data['selling_price'],
+            cost_price=request.data['cost_price'],
+            quantity=request.data['quantity']
+            )
+            p.save()
+            return Response(serializer.data,status=HTTP_201_CREATED)
+        
     except Items.DoesNotExist:
-        return Response({'error':'Item doesnot exist'})
+        print("meh")
+        return Response({'error': 'Item Doesnt Exist'})
+
+@api_view(["POST"]) 
+def register_property(request):
+    try:
+        selected_item= Items.objects.get(id=request.data['item_name'])
+        selected_variant=Variant.objects.get(id=request.data['variant_name'])
+        property_serializer=PropertySerializer(
+                data={
+                    'item_name':selected_item,
+                    'variant_name':selected_variant,
+                    'attribute_name':request.data['attribute_name'],
+                    'attribute_value':request.data['attribute_value']
+                
+                }
+        )
+        if property_serializer.is_valid():
+            print("adi sucka")
+            q=Property.objects.create(
+                item=selected_item,
+                variant=selected_variant,
+                attribute_name=request.data['attribute_name'],
+                attribute_value=request.data['attribute_value']
+            )
+            q.save()
+            return Response(property_serializer.data,status=HTTP_201_CREATED)
     
-    Variant.objects.create(
-        item_name=Items.objects.get[(p.id)],
-        variant_name=request.data['variant_name'],
-        selling_price=request.data['selling_price'],
-        cost_price=request.data['cost_price'],
-        quantity=request.data['quantity'] 
-     )
+    except Items.DoesNotExist or Variant.DoesNotExist:
+        print("meg")
+        return Response({'error': 'Item/variant Doesnt Exist'})
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
    
-    return Response({'message':'sucessful'})
