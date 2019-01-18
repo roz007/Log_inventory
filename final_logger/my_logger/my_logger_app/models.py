@@ -3,29 +3,28 @@ from django.contrib.auth.models import User
 
 class Items(models.Model):
     name=models.CharField(max_length=100)
-    Brand=models.CharField(max_length=100)
-    Category=models.CharField(max_length=100)
-    Product_code=models.IntegerField()
+    brand=models.CharField(max_length=100)
+    category=models.CharField(max_length=100)
+    product_code=models.IntegerField()
 
     def __str__(self):
         return self.name
 
-class Property(models.Model):
-    name=models.ForeignKey(Items,on_delete=models.CASCADE)
-    Attribute_name=models.CharField(max_length=100)
-    Attribute_value=models.CharField(max_length=100)
-
-    def __str__(self):
-        return ('%s %s ' % (self.Attribute_name, self.Attribute_value))
-
 class Variant(models.Model):
-    name=models.ForeignKey(Items,on_delete=models.CASCADE)
-    property_name=models.ForeignKey(Property,on_delete=models.CASCADE)
+    item=models.ForeignKey(Items,on_delete=models.CASCADE)
     variant_name=models.CharField(max_length=100)
     selling_price=models.IntegerField()
     cost_price=models.IntegerField()
     quantity=models.IntegerField()
 
     def __str__(self):
-        return ('%s %s ' % (self.name, self.variant_name))
+        return ('%s %s ' % (self.item, self.variant_name))
 
+class Property(models.Model):
+    item=models.ForeignKey(Items,on_delete=models.CASCADE)
+    variant=models.ForeignKey(Variant,on_delete=models.CASCADE)
+    attribute_name=models.CharField(max_length=100)
+    attribute_value=models.CharField(max_length=100)
+
+    def __str__(self):
+        return ('%s %s ' % (self.attribute_name, self.attribute_value))
