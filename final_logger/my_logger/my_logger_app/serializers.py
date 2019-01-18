@@ -21,7 +21,7 @@ class ItemsSerializer(serializers.ModelSerializer):
     product_code=serializers.IntegerField()
     class Meta:
         model=Items
-        fields=('id','name','category','product_code')
+        fields=('id','name','brand','category','product_code')
 
 class VariantSerializier(serializers.ModelSerializer):
     item_name=serializers.RelatedField(source='item',read_only=True)

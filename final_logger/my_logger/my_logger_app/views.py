@@ -47,3 +47,37 @@ def register(request):
     return Response(serializer.errors)
 
 
+@api_view(["POST"])
+def register_item(request):
+    item_object = ItemsSerializer(
+        data={
+            'name':request.data['name'],
+            'brand':request.data['brand'],
+            'category':request.data['category'],
+            'product_code':request.data['product_code']
+        }
+    )
+    
+    if item_object.is_valid():
+        item_object.save()
+        return Response(item_object.data,status=HTTP_201_CREATED)
+    return Response('item_object.errors') 
+
+@api_view(["POST"])
+def register_variant(request):
+    try:
+        p=Items.objects.all()
+        selected_item = Items.objects.get(id=request.data['item_name'])
+        print(selected_item)
+    except Items.DoesNotExist:
+        return Response({'error':'Item doesnot exist'})
+    
+    Variant.objects.create(
+        item_name=Items.objects.get[(p.id)],
+        variant_name=request.data['variant_name'],
+        selling_price=request.data['selling_price'],
+        cost_price=request.data['cost_price'],
+        quantity=request.data['quantity'] 
+     )
+   
+    return Response({'message':'sucessful'})
