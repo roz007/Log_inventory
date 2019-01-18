@@ -21,10 +21,11 @@ class Property(models.Model):
 class Variant(models.Model):
     name=models.ForeignKey(Items,on_delete=models.CASCADE)
     property_name=models.ForeignKey(Property,on_delete=models.CASCADE)
+    variant_name=models.CharField(max_length=100)
     selling_price=models.IntegerField()
     cost_price=models.IntegerField()
     quantity=models.IntegerField()
 
     def __str__(self):
-        return ('%s %s ' % (self.name, self.property_name))
+        return ('%s %s ' % (self.name, self.variant_name))
 
